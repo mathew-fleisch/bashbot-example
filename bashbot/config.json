@@ -230,15 +230,23 @@
     },
     {
       "name": "List asdf plugins",
-      "description": "List the pre-installed asdf plugins",
+      "description": "List the installed asdf plugins and their versions",
       "help": "bashbot asdf",
       "trigger": "asdf",
       "location": "./",
       "command": [
-        ". $ASDF_DATA_DIR/asdf.sh",
-        "&& echo \"asdf plugin | version\"",
-        "&& echo \"------------|--------\"",
-        "&& asdf plugin list | xargs -I {} bash -c 'printf \"%10s  | %s\" \"{}\" \"$(asdf list {} | awk '\"'\"'{print $1}'\"'\"')\" && echo'"
+        "echo \"•──────────────────────────────•\"",
+        "&& echo \"│ <https://asdf-vm.com/|asdf version: $(asdf version)> |\"",
+        "&& echo \"├───────────────────┰──────────┤\"",
+        "&& echo \"│       asdf plugin │ version  │\"",
+        "&& echo \"├───────────────────┼──────────┤\"",
+        "&& asdf plugin list",
+          "| xargs -I {} bash -c",
+            "'printf \"│ %17s │ %-8s │\"",
+            "\"{}\"",
+            "\"$(asdf list {} | awk '\"'\"'{print $1}'\"'\"')\"",
+            "&& echo'",
+        "&& echo \"•──────────────────────────────•\""
       ],
       "parameters": [],
       "log": true,
