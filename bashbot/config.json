@@ -1,0 +1,337 @@
+{
+  "admins": [
+    {
+      "trigger": "bashbot",
+      "appName": "BashBot",
+      "userIds": [
+        "UP3BBQX34"
+      ],
+      "privateChannelId": "GPFMM5MD2",
+      "logChannelId": "CPJ1NFPL7"
+    }
+  ],
+  "messages": [
+    {
+      "active": true,
+      "name": "welcome",
+      "text": "Witness the power of %s"
+    },
+    {
+      "active": true,
+      "name": "processing_command",
+      "text": ":robot_face: Processing command..."
+    },
+    {
+      "active": true,
+      "name": "processing_raw_command",
+      "text": ":smiling_imp: Processing raw command..."
+    },
+    {
+      "active": true,
+      "name": "command_not_found",
+      "text": ":thinking_face: Command not found..."
+    },
+    {
+      "active": true,
+      "name": "incorrect_parameters",
+      "text": ":face_with_monocle: Incorrect number of parameters"
+    },
+    {
+      "active": true,
+      "name": "invalid_parameter",
+      "text": ":face_with_monocle: Invalid parameter value: %s"
+    },
+    {
+      "active": true,
+      "name": "ephemeral",
+      "text": ":shushing_face: Message only shown to user who triggered it."
+    },
+    {
+      "active": true,
+      "name": "unauthorized",
+      "text": ":skull_and_crossbones: You are not authorized to use this command in this channel.\nAllowed in: [%s]"
+    }
+  ],
+  "tools": [
+    {
+      "name": "BashBot Help",
+      "description": "Show this message",
+      "help": "bashbot help",
+      "trigger": "help",
+      "location": "./",
+      "command": [
+        "echo \"BashBot is a tool for infrastructure/devops teams to automate tasks triggered by slash-command-like declarative configuration\"",
+        "&& echo \"\\`\\`\\`\" && jq -r -c '.tools[] | \"\\(.help) - \\(.description)\"' ${BASHBOT_CONFIG_FILEPATH}",
+        "&& echo \"\\`\\`\\`\""
+      ],
+      "parameters": [],
+      "log": false,
+      "ephemeral": false,
+      "response": "text",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "name": "BashBot Help (cli)",
+      "description": "Show the output of the bashbot go-binary",
+      "help": "bashbot help-binary",
+      "trigger": "help-binary",
+      "location": "./",
+      "command": ["bashbot --help"],
+      "parameters": [],
+      "log": false,
+      "ephemeral": false,
+      "response": "code",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "name": "Get User/Channel Info",
+      "description": "Get information about the user and channel command is being run from",
+      "help": "bashbot info",
+      "trigger": "info",
+      "location": "./vendor/bashbot/examples/info",
+      "command": ["./get-info.sh"],
+      "parameters": [],
+      "log": false,
+      "ephemeral": false,
+      "response": "code",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "name": "List Available Bashbot Commands",
+      "description": "List all of the possible commands stored in bashbot",
+      "help": "bashbot list",
+      "trigger": "list",
+      "location": "./",
+      "command": ["jq -r '.tools[] | .trigger + \" - \" + .name' ${BASHBOT_CONFIG_FILEPATH}"],
+      "parameters": [],
+      "log": false,
+      "ephemeral": false,
+      "response": "code",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "name": "Describe Bashbot [command]",
+      "description": "Show the json object for a specific command",
+      "help": "bashbot describe [command]",
+      "trigger": "describe",
+      "location": "./",
+      "command": ["jq '.tools[] | select(.trigger==\"${command}\")' ${BASHBOT_CONFIG_FILEPATH}"],
+      "parameters": [
+        {
+          "name": "command",
+          "allowed": [],
+          "description": "a command to describe ('bashbot list')",
+          "source": ["jq -r '.tools[] | .trigger' ${BASHBOT_CONFIG_FILEPATH}"]
+        }
+      ],
+      "log": false,
+      "ephemeral": false,
+      "response": "code",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "name": "TEST Command",
+      "description": "Show the json object for a specific command",
+      "help": "bashbot test",
+      "trigger": "test",
+      "location": "./",
+      "command": [
+        "echo \"Username[id]: ${TRIGGERED_USER_NAME}[${TRIGGERED_USER_ID}]\"",
+        "&& echo \" Channel[id]: ${TRIGGERED_CHANNEL_NAME}[${TRIGGERED_CHANNEL_ID}] <@${TRIGGERED_USER_ID}>\""
+      ],
+      "parameters": [],
+      "log": false,
+      "ephemeral": false,
+      "response": "code",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "name": "Date or Uptime",
+      "description": "Show the current time or uptime",
+      "help": "bashbot time",
+      "trigger": "time",
+      "location": "./",
+      "command": ["${command}"],
+      "parameters": [
+        {
+          "name": "command",
+          "allowed": [
+            "date",
+            "uptime"
+          ]
+        }
+      ],
+      "log": false,
+      "ephemeral": false,
+      "response": "code",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "name": "Get Bashbot Version",
+      "description": "Displays the currently running version of Bashbot",
+      "help": "bashbot version",
+      "trigger": "version",
+      "location": "./vendor/bashbot/examples/version",
+      "command": ["./get-version.sh"],
+      "parameters": [],
+      "log": false,
+      "ephemeral": false,
+      "response": "code",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "name": "Ping/Pong",
+      "description": "Return pong on pings",
+      "help": "bashbot ping",
+      "trigger": "ping",
+      "location": "./",
+      "command": ["echo \"pong\""],
+      "parameters": [],
+      "log": false,
+      "ephemeral": false,
+      "response": "text",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "name": "Get Latest Bashbot Version",
+      "description": "Returns the latest version of Bashbot via curl",
+      "help": "bashbot latest-release",
+      "trigger": "latest-release",
+      "location": "./",
+      "command": [
+        "latest_version=$(curl -s https://api.github.com/repos/mathew-fleisch/bashbot/releases/latest | grep tag_name | cut -d '\"' -f 4)",
+        "&& echo \"The latest version of <https://github.com/mathew-fleisch/bashbot|Bashbot>: <https://github.com/mathew-fleisch/bashbot/releases/tag/$latest_version|$latest_version>\""
+      ],
+      "parameters": [],
+      "log": false,
+      "ephemeral": false,
+      "response": "text",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "name": "List asdf plugins",
+      "description": "List the pre-installed asdf plugins",
+      "help": "bashbot asdf",
+      "trigger": "asdf",
+      "location": "./",
+      "command": [
+        ". $ASDF_DATA_DIR/asdf.sh",
+        "&& echo \"asdf plugin | version\"",
+        "&& echo \"------------|--------\"",
+        "&& asdf plugin list | xargs -I {} bash -c 'printf \"%10s  | %s\" \"{}\" \"$(asdf list {} | awk '\"'\"'{print $1}'\"'\"')\" && echo'"
+      ],
+      "parameters": [],
+      "log": true,
+      "ephemeral": false,
+      "response": "code",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "name": "List Example Commands",
+      "description": "List commands from bashbot example commands",
+      "help": "bashbot list-examples",
+      "trigger": "list-examples",
+      "location": "./vendor/bashbot/examples",
+      "command": [
+        "find . -name \"*.json\"",
+        "| xargs -I {} bash -c",
+          "'export example=$(basename {} .json)",
+          "&& printf \"%21s - %s\" \"$example\" \"https://github.com/mathew-fleisch/bashbot/tree/main/examples/$example\"",
+          "&& echo'",
+        "| sort -k 2"
+      ],
+      "parameters": [],
+      "log": false,
+      "ephemeral": false,
+      "response": "code",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "name": "Add Example Command",
+      "description": "Add command from bashbot example commands",
+      "help": "bashbot add-example",
+      "trigger": "add-example",
+      "location": "./vendor/bashbot/examples",
+      "command": [
+        "./add-example/add-command.sh $(find . -name \"${add_command}.json\")"
+      ],
+      "parameters": [
+        {
+          "name": "add_command",
+          "allowed": [],
+          "description": "a command to add to bashbot config ('bashbot list-examples')",
+          "source": ["find . -name \"*.json\" | xargs -I {} basename {} .json"]
+        }
+      ],
+      "log": false,
+      "ephemeral": false,
+      "response": "code",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "name": "Remove Example Command",
+      "description": "Remove command from bashbot example commands",
+      "help": "bashbot remove-example",
+      "trigger": "remove-example",
+      "location": "./vendor/bashbot/examples",
+      "command": ["./remove-example/remove-command.sh ${remove_command}"
+      ],
+      "parameters": [
+        {
+          "name": "remove_command",
+          "allowed": [],
+          "description": "a command to remove to bashbot config ('bashbot list-examples')",
+          "source": ["find . -name \"*.json\" | xargs -I {} basename {} .json"]
+        }
+      ],
+      "log": false,
+      "ephemeral": false,
+      "response": "code",
+      "permissions": [
+        "all"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "BashBot scripts Scripts",
+      "install": [
+        "rm -rf bashbot-scripts || true",
+        "&& git clone https://github.com/mathew-fleisch/bashbot-scripts.git"
+      ]
+    },
+    {
+      "name": "Bashbot Inception: Get Dat BASH",
+      "install": [
+        "rm -rf bashbot || true",
+        "&& git clone https://github.com/mathew-fleisch/bashbot.git"
+      ]
+    }
+  ]
+}
