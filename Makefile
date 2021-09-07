@@ -4,7 +4,7 @@ export CFLAGS
 LOG_LEVEL?=info
 LOG_FORMAT?=text
 
-.PHONY: install-latest run-binary int-run-binary run-docker config-maps get delete describe exec logs
+.PHONY: install-latest run-binary int-run-binary docker-build-alpine docker-build-ubuntu docker-run docker-run-local docker-exec config-maps get delete describe exec logs
 # --------------- Run With Release Binary --------------- #
 
 os=$(shell uname | tr '[:upper:]' '[:lower:]')
@@ -39,7 +39,7 @@ int-run-binary:
 
 # --------------- Run Locally With Docker --------------- #
 
-run-docker:
+docker-run:
 	@expected="SLACK_TOKEN BASHBOT_CONFIG_FILEPATH" /bin/bash scripts/check-environment-variables.sh
 	@docker run --rm \
 		-v $(BASHBOT_CONFIG_FILEPATH):/bashbot/config.json \
@@ -47,7 +47,29 @@ run-docker:
 		-e SLACK_TOKEN=$(SLACK_TOKEN) \
 		-e LOG_LEVEL="$(LOG_LEVEL)" \
 		-e LOG_FORMAT="$(LOG_FORMAT)" \
+		--name bashbot \
 		-it mathewfleisch/bashbot:latest
+
+docker-build-alpine:
+	@docker build -t bashbot-local -f Dockerfile.alpine	.
+
+docker-build-ubuntu:
+	@docker build -t bashbot-local -f Dockerfile.ubuntu	.
+
+docker-run-local:
+	@expected="SLACK_TOKEN BASHBOT_CONFIG_FILEPATH" /bin/bash scripts/check-environment-variables.sh
+	@docker run --rm \
+		-v $(BASHBOT_CONFIG_FILEPATH):/bashbot/config.json \
+		-e BASHBOT_CONFIG_FILEPATH="/bashbot/config.json" \
+		-e SLACK_TOKEN=$(SLACK_TOKEN) \
+		-e LOG_LEVEL="$(LOG_LEVEL)" \
+		-e LOG_FORMAT="$(LOG_FORMAT)" \
+		--name bashbot \
+		-it bashbot-local:latest
+
+docker-exec:
+	@expected="SLACK_TOKEN BASHBOT_CONFIG_FILEPATH" /bin/bash scripts/check-environment-variables.sh
+	@docker exec -it $(shell docker ps -aqf "name=bashbot") bash
 
 # --------------- Kubernetes Stuff --------------- #
 NAMESPACE?=bashbot

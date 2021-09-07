@@ -154,7 +154,7 @@ chmod +x /usr/local/bin/bashbot
 
 # To verify installation run version or help commands
 bashbot --version
-# bashbot-darwin-amd64    v1.6.2
+# bashbot-darwin-amd64    v1.6.3
 
 bashbot --help
 #  ____            _     ____        _   
@@ -218,7 +218,7 @@ bashbot
 export BASH_CONFIG_FILEPATH=${PWD}/bashbot/config.json
 export SLACK_TOKEN=xoxb-xxxxx-xxxxxxx
 
-make run-docker
+make docker-run
 ```
 
 Or "the hard way"
@@ -244,6 +244,7 @@ docker run --rm \
    -v /var/run/docker.sock:/var/rund/docker.sock \
    -v ${BASHBOT_CONFIG_FILEPATH}:/bashbot/config.json \
    -e BASHBOT_CONFIG_FILEPATH="/bashbot/config.json" \
+   -e SLACK_TOKEN=${SLACK_TOKEN} \
    -v ${PWD}/bashbot/.env:/bashbot/.env \
    -v ${PWD}/bashbot/id_rsa:/root/.ssh/id_rsa \
    -v ${PWD}/bashbot/id_rsa.pub:/root/.ssh/id_rsa.pub \
@@ -261,6 +262,7 @@ docker run --rm \
    -v /var/run/docker.sock:/var/run/docker.sock \
    --group-add $(stat -c '%g' /var/run/docker.sock) \
    -v ${BASHBOT_CONFIG_FILEPATH}:/bashbot/config.json \
+   -e SLACK_TOKEN=${SLACK_TOKEN} \
    -e BASHBOT_CONFIG_FILEPATH="/bashbot/config.json" \
    -v ${PWD}/bashbot/.env:/bashbot/.env \
    -v ${PWD}/bashbot/id_rsa:/root/.ssh/id_rsa \
@@ -382,7 +384,7 @@ spec:
         - env:
             - name: BASHBOT_ENV_VARS_FILEPATH
               value: /bashbot/.env
-          image: mathewfleisch/bashbot:v1.6.2
+          image: mathewfleisch/bashbot:v1.6.3
           imagePullPolicy: IfNotPresent
           name: bashbot
           command: ["/bin/sh"]
@@ -455,15 +457,22 @@ kubectl -n bashbot get pods
 
 A Makefile is included in this repository to make common actions easier to execute.
 
-
  - `make install-latest`
    - This target will download the latest go-binary to `/usr/local/bin/bashbot`
  - `make run-binary`
    - This target will attempt to install vendor dependencies and run bashbot
  - `make int-run-binary`
    - This target is not meant to be run externally, and is used as a workaround to clean-up vendor dependencies after exiting `make run-binary`
- - `make run-docker`
-   - This target will run bashbot in a docker container
+ - `make docker-build-alpine`
+   - This target will build an alpine container, install linters and bashbot through asdf
+ - `make docker-build-ubuntu`
+   - This target will build an ubuntu container, install linters and bashbot through asdf
+ - `make docker-run`
+   - This target will run bashbot in the dockerhub docker container
+ - `make docker-run-local`
+   - This target will run bashbot in a docker container built by `make docker-build-alpine` or `make docker-build-ubuntu`
+ - `make docker-exec`
+   - This target will exec into a running docker container named 'bashbot'
  - `bot_name=bashbot make config-maps`
    - This target will overwrite any existing configmaps for the bot/directory `bashbot`
  - `bot_name=bashbot make get`

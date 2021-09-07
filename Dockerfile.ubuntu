@@ -1,0 +1,29 @@
+FROM ubuntu:latest
+LABEL maintainer="Mathew Fleisch <mathew.fleisch@gmail.com>"
+ENV BASHBOT_CONFIG_FILEPATH=/bashbot/config.json
+ENV BASHBOT_ENV_VARS_FILEPATH ""
+ENV SLACK_TOKEN ""
+ENV LOG_LEVEL "info"
+ENV LOG_FORMAT "text"
+ENV ASDF_DATA_DIR /root/.asdf
+
+# Update/get apt dependencies
+RUN apt update \
+	&& apt install -y curl git make jq python3 python3-pip vim \
+	&& rm /bin/sh && ln -s /bin/bash /bin/sh \
+	&& ln -s /usr/bin/python3 /usr/local/bin/python
+
+# Install asdf dependencies
+WORKDIR /root
+COPY .tool-versions /root/.tool-versions
+RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1 \
+	&& echo ". $HOME/.asdf/asdf.sh" >> $HOME/.bashrc \
+	&& echo ". $HOME/.asdf/completions/asdf.bash" >> $HOME/.bashrc \
+	&& . ${ASDF_DATA_DIR}/asdf.sh \
+	&& asdf update \
+	&& while IFS= read -r line; do asdf plugin add $(echo "$line" | awk '{print $1}'); done < .tool-versions \
+	&& asdf install \
+	&& mkdir -p /bashbot \
+	&& git clone --depth 1 https://github.com/mathew-fleisch/bashbot.git /bashbot
+WORKDIR /bashbot
+CMD /bin/sh -c ". ${ASDF_DATA_DIR}/asdf.sh && ./entrypoint.sh"
