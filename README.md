@@ -280,7 +280,17 @@ docker exec -it $(docker ps -aqf "name=bashbot") bash
 docker rm $(docker ps -aqf "name=bashbot")
 ```
 
+The previous examples use the dockerhub container and the next section will describe how to build a container ([alpine](Dockerfile.alpine) or [ubuntu](Dockerfile.ubuntu)) and install bashbot with the [asdf bashbot plugin](https://github.com/mathew-fleisch/asdf-bashbot). This method will allow more granular control over the tools bashbot can leverage in the [.tool-versions](.tool-versions) file.
 
+```bash
+# Build alpine container
+make docker-build-alpine
+# or build ubuntu container
+make docker-build-ubuntu
+
+# Run local container
+make docker-run-local
+```
 
 ------------------------------------------------------------------------
 
