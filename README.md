@@ -154,7 +154,7 @@ chmod +x /usr/local/bin/bashbot
 
 # To verify installation run version or help commands
 bashbot --version
-# bashbot-darwin-amd64    v1.6.3
+# bashbot-darwin-amd64    v1.6.15
 
 bashbot --help
 #  ____            _     ____        _   
@@ -365,9 +365,32 @@ Note: filename must be config.json to match deployment yaml
 }
 ```
 
-Example deployment yaml mounts the configmaps and copies the seed configuration in place before executing the entrypoint script. Note: Bashbot is currently not set up for federation, so there should only ever be one replica of each deployment.
+Example deployment yaml mounts the configmaps and copies the seed configuration in place before executing the entrypoint script. A service account and rolebinding are also included to access kube-api from inside the cluster. Note: Bashbot is currently not set up for federation, so there should only ever be one replica of each deployment.
 
 ```yaml
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"arm64-bashbot"},"name":"bashbot","namespace":"bashbot"}}
+  name: bashbot
+  namespace: bashbot
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: bashbot
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: bashbot
+  namespace: bashbot
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -394,12 +417,12 @@ spec:
         - env:
             - name: BASHBOT_ENV_VARS_FILEPATH
               value: /bashbot/.env
-          image: mathewfleisch/bashbot:v1.6.3
+          image: mathewfleisch/bashbot:v1.6.15
           imagePullPolicy: IfNotPresent
           name: bashbot
           command: ["/bin/sh"]
           args: ["-c", "cp seed.json config.json && ./entrypoint.sh"]
-          # To override entrypoint and poke around:
+          # To override entrypoint, and run container without bashbot process, comment out the above line and uncomment the following line:
           # args: ["-c", "while true; do echo hello; sleep 10;done"]
           resources: {}
           terminationMessagePath: /dev/termination-log
@@ -433,9 +456,13 @@ spec:
             name: bashbot-env
       dnsPolicy: ClusterFirst
       restartPolicy: Always
+      serviceAccount: bashbot
+      serviceAccountName: bashbot
+      automountServiceAccountToken: true
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 0
+
 ```
 
 
