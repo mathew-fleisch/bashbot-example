@@ -47,7 +47,7 @@ spec:
         - env:
             - name: BASHBOT_ENV_VARS_FILEPATH
               value: /bashbot/.env
-          image: mathewfleisch/bashbot:v1.6.3
+          image: mathewfleisch/bashbot:v1.6.15
           imagePullPolicy: IfNotPresent
           name: bashbot
           command: ["/bin/sh"]
