@@ -118,7 +118,7 @@ Verify secret is saved
 The easiest way to run Bashbot as a go-binary is by using the makefile targets:
 
 ```bash
-export BASH_CONFIG_FILEPATH=${PWD}/bashbot/config.json
+export BASHBOT_CONFIG_FILEPATH=${PWD}/bashbot/config.json
 export SLACK_TOKEN=xoxb-xxxxx-xxxxxxx
 make install-latest
 make run-binary
@@ -128,7 +128,7 @@ make run-binary
 Or "the hard way"
 
 ```bash
-export BASH_CONFIG_FILEPATH=${PWD}/bashbot/config.json
+export BASHBOT_CONFIG_FILEPATH=${PWD}/bashbot/config.json
 export SLACK_TOKEN=xoxb-xxxxx-xxxxxxx
 
 # ----------- Install binary -------------- #
@@ -215,7 +215,7 @@ bashbot
 ## Run Bashbot Locally From Docker
 
 ```bash
-export BASH_CONFIG_FILEPATH=${PWD}/bashbot/config.json
+export BASHBOT_CONFIG_FILEPATH=${PWD}/bashbot/config.json
 export SLACK_TOKEN=xoxb-xxxxx-xxxxxxx
 
 make docker-run
@@ -224,7 +224,7 @@ make docker-run
 Or "the hard way"
 
 ```bash
-export BASH_CONFIG_FILEPATH=${PWD}/bashbot/config.json
+export BASHBOT_CONFIG_FILEPATH=${PWD}/bashbot/config.json
 export SLACK_TOKEN=xoxb-xxxxx-xxxxxxx
 
 docker run --rm \
