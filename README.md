@@ -1,4 +1,6 @@
-# Bashbot Setup/Deployment Examples
+# Bashbot Setup/Deployment Examples (v1)
+
+Note: This repository is archived because all documentation has been moved to the main [bashbot repo](https://github.com/mathew-fleisch/bashbot) and changed drastically after v1.
 
 [BashBot](https://github.com/mathew-fleisch/bashbot) is a chat-ops tool written in golang for infrastructure/devops teams. [A json configuration file](bashbot/config.json), saved in this repository, is used to extend custom scripts and automation from your existing processes, to Slack. Commands can be restricted to private channels and/or use metadata from the user who triggers each command, as input, when Bashbot executes your scripts and automation. This repository shows some examples of how you can deploy Bashbot in your infrastructure and run locally for testing. Fork this repository and use the method that makes sense for your team's needs. Multiple instances of Bashbot can be run using the same slack token, but the triggers should be different to avoid multiple responses. Contributions to [BashBot](https://github.com/mathew-fleisch/bashbot) are welcome!
 
